@@ -1,0 +1,23 @@
+<div class="heat-map-container">
+
+  <div class="heat-map-monthNames">
+    <div *ngFor="let monthName of monthNames" class="month-header-cell">
+      {{monthName}}
+    </div>
+  </div>
+
+  <div class="heat-map-grid">
+
+    <div class="heat-map-grid-weekNames">
+      <div *ngFor="let dayName of dayNames" class="weekday-side-header-cell">
+        {{dayName}}
+      </div>
+    </div>
+
+    <div class="heat-map-grid-event-data">
+      <app-data-cell *ngFor="let data of eventData" [data]="data" [maxEvents]="maxEvents" />
+    </div>
+
+  </div>
+
+</div>

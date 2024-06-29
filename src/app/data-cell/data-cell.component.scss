@@ -1,0 +1,16 @@
+$cell-size: 10px;
+$cell-spacing: 2px;
+$cell-border: 1px;
+
+.data-cell {
+    height: $cell-size;
+    width: $cell-size;
+    margin: $cell-spacing;
+    border: $cell-border solid rgba(0, 0, 0, 0.1);
+    // background-color: rgba(3, 160, 3);
+    border-radius: 2px;
+
+    &:hover {
+        border: 1px solid rgba(0, 0, 0, 0.3);
+    }
+}

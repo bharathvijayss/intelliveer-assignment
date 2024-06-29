@@ -1,0 +1,51 @@
+$cell-size: 10px;
+$cell-spacing: 2px;
+$cell-border: 1px;
+$font-size: 14px;
+
+.heat-map-container {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    margin: 16px;
+
+    & .heat-map-monthNames {
+        // white-space: nowrap;
+        padding-left: calc((($cell-size * 3) + ($cell-spacing * 2) + ($cell-border * 2)));
+        display: flex;
+        font-size: $font-size;
+
+        & .month-header-cell {
+            min-width: $cell-size;
+            max-width: $cell-size;
+            margin: $cell-spacing;
+            border: $cell-border solid transparent;
+        }
+    }
+
+    & .heat-map-grid {
+        // white-space: nowrap;
+        display: flex;
+        flex-direction: row;
+
+        & .heat-map-grid-weekNames {
+            display: flex;
+            flex-direction: column;
+
+            & .weekday-side-header-cell {
+                height: $cell-size;
+                width: $cell-size * 3;
+                margin: $cell-spacing;
+                font-size: $font-size;
+                border: $cell-border solid transparent;
+            }
+        }
+
+        & .heat-map-grid-event-data {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            height: calc(($cell-size + ($cell-spacing * 2) + ($cell-border * 2)) * 7);
+        }
+    }
+}
