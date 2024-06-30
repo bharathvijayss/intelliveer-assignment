@@ -18,7 +18,8 @@
         </div>
 
         <div class="heat-map-grid-event-data">
-          <app-data-cell *ngFor="let data of eventData" [data]="data" [maxEvents]="maxEvents" [showTooltip]="true" />
+          <app-data-cell *ngFor="let data of eventData" [intensityFilter]="active_intensity_filter" [data]="data"
+            [maxEvents]="maxEvents" [isNotes]="false" [startDate]="startDate" [endDate]="endDate" />
         </div>
 
       </div>
@@ -27,7 +28,9 @@
 
     <div class="notes">
       <div>Less</div>
-      <app-data-cell *ngFor="let data of notesdata" [data]="data" [maxEvents]="maxNotesEvents" [showTooltip]="false" />
+      <app-data-cell *ngFor="let data of notesdata" [intensityFilter]="active_intensity_filter" [data]="data"
+        [maxEvents]="maxNotesEvents" [isNotes]="true" (click)="intensityFilter(data)" [startDate]="startDate"
+        [endDate]="endDate" />
       <div>More</div>
     </div>
   </div>
@@ -38,4 +41,20 @@
       {{filter.year}}
     </div>
   </div>
+</div>
+
+<div class="filters">
+
+  <div>
+    <label for="fromdate">From Date: </label>
+    <input type="date" id="fromdate" name="fromdate" [min]="minDate" [max]="maxDate" #fromDatePicker>
+  </div>
+  <div>
+    <label for="todate">To Date: </label>
+    <input type="date" id="todate" name="todate" [min]="minDate" [max]="maxDate" #toDatePicker>
+  </div>
+  <button (click)="dateRangeFilter()">Apply Date Range Filter</button>
+  <button (click)="resetDateRangeFilter()">Reset Date Range Filter</button>
+  <button (click)="filterReset()">Reset All Filters</button>
+  <button (click)="resetIntensityFilter()">Reset Intensity Filter</button>
 </div>

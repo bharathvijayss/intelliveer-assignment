@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AppService } from './app.service';
 import { IEventData } from './model/EventData';
 import { Subject, filter, takeUntil } from 'rxjs';
@@ -12,6 +12,8 @@ import { IYearFilter } from './model/YearFilter';
 })
 export class AppComponent implements OnInit, OnDestroy {
 
+  @ViewChild('fromDatePicker', { static: true }) fromDatePicker!: ElementRef;
+  @ViewChild('toDatePicker', { static: true }) toDatePicker!: ElementRef;  
   eventData: IProcessedEventData[] = [];
   notesdata: IProcessedEventData[] = [];
   daysCount!: number;
@@ -30,13 +32,18 @@ export class AppComponent implements OnInit, OnDestroy {
     'Fri': true,
     'Sat': false
   }
-  maxEvents: number = 0;
+  maxEvents: number = 0;  
   maxNotesEvents: number = 4;
   destroySubject: Subject<void> = new Subject<void>();
   yearFilter: IYearFilter[] = [];
   maxYearFilters: number = 5;
   activeYearFilter!: number;
-  filterChanged: boolean = false;
+  filterChanged: boolean = false;  
+  active_intensity_filter: number = -1;
+  minDate!: string;
+  maxDate!: string;
+  startDate: string = '';
+  endDate: string = '';
 
   constructor(private appSrv: AppService) { }
 
@@ -46,7 +53,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this.initYearFilter();
     this.initMonthNames();
     this.initNotes();
+    this.setMinMaxDate();
     this.initEventData();
+  }
+
+  intensityFilter(data: IProcessedEventData) {
+    if (this.active_intensity_filter !== data.intensity) {
+      this.active_intensity_filter = data.intensity;
+    }
   }
 
   findDateRange() {
@@ -64,6 +78,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   initYearFilter() {
+    this.yearFilter = [];
     const date = new Date();
     const currentYear = date.getFullYear();
     this.activeYearFilter = currentYear;
@@ -87,15 +102,39 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   yearFilterApplied(appliedFilter: IYearFilter) {
-    this.filterChanged = true;
-    this.unsubscribeRandomDataGenerator();
-    this.appSrv.stopRandomeDataGenerator();
+    this.stopGettingDataAndResetFilters();
     this.activeYearFilter = appliedFilter.year;
     this.toDate = appliedFilter.toDate;
     this.fromDate = appliedFilter.fromDate;
+    this.resetDateRangeFilter();
     this.daysCount = this.getDaysCount(appliedFilter.year);
     this.initMonthNames();
+    this.setMinMaxDate();
     this.initEventData();
+  }
+
+  setMinMaxDate() {
+    this.minDate = this.fromDate.toISOString().split('T')[0];
+    this.maxDate = this.toDate.toISOString().split('T')[0];
+  }
+
+  dateRangeFilter() {
+    this.startDate = this.fromDatePicker.nativeElement.value;
+    this.endDate = this.toDatePicker.nativeElement.value;
+    if (!this.startDate || !this.endDate) {
+      alert('Both Start and End date is mandatory for applying date range filter')
+      return;
+    } else {
+      this.startDate = `${this.startDate}T00:00:00`;
+      this.endDate = `${this.endDate}T00:00:00`;
+    }
+  }
+
+  resetDateRangeFilter() {
+    this.fromDatePicker.nativeElement.value = '';
+    this.toDatePicker.nativeElement.value = '';
+    this.startDate = `${new Date(this.fromDate).toISOString().split('T')[0]}T00:00:00`;
+    this.endDate = `${new Date(this.toDate).toISOString().split('T')[0]}T00:00:00`;
   }
 
   getDaysCount(year: number): number {
@@ -106,6 +145,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   initWeekNames() {
+    this.dayNames = [];
     for (let weekName in this.weekDays) {
       if (this.weekDays[weekName]) {
         this.dayNames.push(weekName);
@@ -139,6 +179,23 @@ export class AppComponent implements OnInit, OnDestroy {
         intensity: note
       }
     }
+  }
+
+  stopGettingDataAndResetFilters() {
+    this.filterChanged = true;
+    this.unsubscribeRandomDataGenerator();
+    this.appSrv.stopRandomeDataGenerator();
+    this.resetIntensityFilter();
+  }
+
+  filterReset() {
+    this.stopGettingDataAndResetFilters();
+    this.ngOnInit();    
+    this.resetDateRangeFilter();
+  }
+
+  resetIntensityFilter() {
+    this.active_intensity_filter = -1;
   }
 
   initEventData() {
@@ -181,7 +238,6 @@ export class AppComponent implements OnInit, OnDestroy {
         timestamp,
         intensity: intensity + 1
       }
-      this.eventData[index].intensity += 1;
       if (this.eventData[index].intensity > this.maxEvents) {
         this.maxEvents = this.eventData[index].intensity;
       }

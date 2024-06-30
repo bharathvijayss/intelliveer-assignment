@@ -1,6 +1,8 @@
 $cell-size: 10px;
 $cell-spacing: 2px;
 $cell-border: 1px;
+$bg-color: #0969da;
+$font-color: white;
 
 .heat-map-container {
     margin: 16px;
@@ -76,6 +78,7 @@ $cell-border: 1px;
     align-items: center;
     gap: $cell-spacing;
     justify-content: flex-end;
+    cursor: pointer;
 }
 
 .container {
@@ -96,9 +99,35 @@ $cell-border: 1px;
             transition: all 0.3s ease;
 
             &.active {
-                background-color: #0969da;
-                color: white;
+                background-color: $bg-color;
+                color: $font-color;
             }
         }
+    }
+}
+
+.filters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+
+    & input, label, button {
+        cursor: pointer;
+    }
+
+    & input {
+        border-width: 0.5px;
+        border-radius: 4px;
+        padding: 6px;
+    }
+
+    & button {
+        border-radius: 4px;
+        padding: 6px;
+        background-color: $bg-color;
+        color: $font-color;
+        outline: none;
+        border: none;
     }
 }

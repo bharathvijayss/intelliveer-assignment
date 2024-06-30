@@ -23,7 +23,7 @@ export class AppService {
     this.stopRandomeDataGenerator();
     this.intervalId = setInterval(() => {
       this.generateMockData();
-    }, 1000)
+    }, 3000)
   }
 
   stopRandomeDataGenerator() {
