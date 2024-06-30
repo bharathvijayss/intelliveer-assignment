@@ -7,10 +7,11 @@ import { IProcessedEventData } from '../model/processedEventData';
   styleUrls: ['./data-cell.component.scss']
 })
 export class DataCellComponent {
-  @Input() data!: IProcessedEventData;
-  @Input() maxEvents!: number;
+  @Input({ required: true }) data!: IProcessedEventData;
+  @Input({ required: true }) maxEvents!: number;
+  @Input({ required: true }) showTooltip!: boolean;
 
-  tooltip!: string;
+  tooltip: string = '';
   bgColor!: string;
 
   ngOnInit() {
@@ -35,7 +36,7 @@ export class DataCellComponent {
     const month = date.toLocaleString('default', { month: 'long' });
     const day = date.getDate();
     const dayWithSuffix = this.getDayWithSuffix(day);
-    return `${month} ${dayWithSuffix}`;
+    return `${month} ${dayWithSuffix}, ${date.getFullYear()}`;
   }
 
   getDayWithSuffix(day: number): string {

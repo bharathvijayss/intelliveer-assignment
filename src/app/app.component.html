@@ -1,23 +1,41 @@
-<div class="heat-map-container">
+<div class="container">
 
-  <div class="heat-map-monthNames">
-    <div *ngFor="let monthName of monthNames" class="month-header-cell">
-      {{monthName}}
-    </div>
-  </div>
+  <div class="heat-map-container">
+    <div class="heat-map">
 
-  <div class="heat-map-grid">
-
-    <div class="heat-map-grid-weekNames">
-      <div *ngFor="let dayName of dayNames" class="weekday-side-header-cell">
-        {{dayName}}
+      <div class="heat-map-monthNames">
+        <div *ngFor="let monthName of monthNames" class="month-header-cell">
+          {{monthName}}
+        </div>
       </div>
+
+      <div class="heat-map-grid">
+
+        <div class="heat-map-grid-weekNames">
+          <div *ngFor="let dayName of dayNames" class="weekday-side-header-cell">
+            {{dayName}}
+          </div>
+        </div>
+
+        <div class="heat-map-grid-event-data">
+          <app-data-cell *ngFor="let data of eventData" [data]="data" [maxEvents]="maxEvents" [showTooltip]="true" />
+        </div>
+
+      </div>
+
     </div>
 
-    <div class="heat-map-grid-event-data">
-      <app-data-cell *ngFor="let data of eventData" [data]="data" [maxEvents]="maxEvents" />
+    <div class="notes">
+      <div>Less</div>
+      <app-data-cell *ngFor="let data of notesdata" [data]="data" [maxEvents]="maxNotesEvents" [showTooltip]="false" />
+      <div>More</div>
     </div>
-
   </div>
 
+  <div class="year-filter">
+    <div *ngFor="let filter of yearFilter" class='year' [ngClass]="{ 'active': filter.year === activeYearFilter }"
+      (click)="yearFilterApplied(filter)">
+      {{filter.year}}
+    </div>
+  </div>
 </div>

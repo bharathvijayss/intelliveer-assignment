@@ -1,19 +1,41 @@
 $cell-size: 10px;
 $cell-spacing: 2px;
 $cell-border: 1px;
-$font-size: 14px;
 
 .heat-map-container {
+    margin: 16px;
+    display: inline-flex;
+    flex-direction: column;
+    gap: $cell-size;
+    min-width: 25%;
+}
+
+.heat-map {
     display: flex;
     flex-direction: column;
     overflow: auto;
-    margin: 16px;
+
+    &::-webkit-scrollbar {
+        width: 16px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: #e4e4e4;
+        border-radius: 100px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #d4aa70;
+        border-radius: 100px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #c48b3a;
+    }
 
     & .heat-map-monthNames {
-        // white-space: nowrap;
         padding-left: calc((($cell-size * 3) + ($cell-spacing * 2) + ($cell-border * 2)));
         display: flex;
-        font-size: $font-size;
 
         & .month-header-cell {
             min-width: $cell-size;
@@ -24,7 +46,6 @@ $font-size: 14px;
     }
 
     & .heat-map-grid {
-        // white-space: nowrap;
         display: flex;
         flex-direction: row;
 
@@ -36,8 +57,8 @@ $font-size: 14px;
                 height: $cell-size;
                 width: $cell-size * 3;
                 margin: $cell-spacing;
-                font-size: $font-size;
                 border: $cell-border solid transparent;
+                text-align: center;
             }
         }
 
@@ -46,6 +67,38 @@ $font-size: 14px;
             flex-direction: column;
             flex-wrap: wrap;
             height: calc(($cell-size + ($cell-spacing * 2) + ($cell-border * 2)) * 7);
+        }
+    }
+}
+
+.notes {
+    display: flex;
+    align-items: center;
+    gap: $cell-spacing;
+    justify-content: flex-end;
+}
+
+.container {
+
+    display: flex;
+
+    .year-filter {
+        width: 60px;
+        max-width: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+
+        & .year {
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &.active {
+                background-color: #0969da;
+                color: white;
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ export class AppService {
   toDate!: Date;
   daysCount!: number;
   private eventData$: BehaviorSubject<IEventData[]> = new BehaviorSubject<IEventData[]>([]);
+  intervalId!: any;
 
   get EventData$(): Observable<IEventData[]> {
     return this.eventData$.asObservable();
@@ -18,18 +19,30 @@ export class AppService {
 
   constructor() { }
 
+  startRandomDataGenerator() {
+    this.stopRandomeDataGenerator();
+    this.intervalId = setInterval(() => {
+      this.generateMockData();
+    }, 1000)
+  }
+
+  stopRandomeDataGenerator() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
+
   setDateRange(startDate: Date, endDate: Date, daysCount: number) {
     this.fromDate = startDate;
     this.toDate = endDate;
     this.daysCount = daysCount;
-    this.generateMockData();
   }
 
   generateMockData() {
 
     const mockData: IEventData[] = [];
 
-    for (let i = 0; i < this.daysCount * 2; i++) {
+    for (let i = 0; i < this.daysCount; i++) {
       mockData.push({
         timestamp: this.getRandomDate()
       });
