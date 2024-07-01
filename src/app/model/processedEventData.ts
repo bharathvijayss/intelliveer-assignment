@@ -1,4 +1,6 @@
 export interface IProcessedEventData {
     timestamp: Date,
-    intensity: number
+    intensity: number,
+    bgColor: string,
+    tooltip: string
 }

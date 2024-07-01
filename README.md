@@ -7,7 +7,7 @@ The heatmap initially covers a one-year period from the current date, extending 
 If the current date is past January, the current year is used to determine if it's a leap year. Otherwise, the previous year is considered for this calculation.
 
 ## Live Event Updates
-An automatic random event generator runs every 3 second. This generator updates the UI with live event data without requiring a full page refresh.
+An automatic random event generator runs every 1 second. This generator updates the UI with live event data without requiring a full page refresh.
 
 ## Event Generation for Filters
 - The default view and the current year filter both start the random event generator, displaying live event updates.

@@ -112,7 +112,9 @@ $font-color: white;
     align-items: center;
     gap: 1rem;
 
-    & input, label, button {
+    & input,
+    label,
+    button {
         cursor: pointer;
     }
 
@@ -120,6 +122,11 @@ $font-color: white;
         border-width: 0.5px;
         border-radius: 4px;
         padding: 6px;
+
+        &.disabled {
+            cursor: not-allowed;
+            background-color: grey;
+        }
     }
 
     & button {
@@ -129,5 +136,10 @@ $font-color: white;
         color: $font-color;
         outline: none;
         border: none;
+
+        &.disabled {
+            cursor: not-allowed;
+            background-color: grey;
+        }
     }
 }

@@ -18,8 +18,7 @@
         </div>
 
         <div class="heat-map-grid-event-data">
-          <app-data-cell *ngFor="let data of eventData" [intensityFilter]="active_intensity_filter" [data]="data"
-            [maxEvents]="maxEvents" [isNotes]="false" [startDate]="startDate" [endDate]="endDate" />
+          <app-data-cell *ngFor="let data of eventData" [data]="data" />
         </div>
 
       </div>
@@ -28,9 +27,7 @@
 
     <div class="notes">
       <div>Less</div>
-      <app-data-cell *ngFor="let data of notesdata" [intensityFilter]="active_intensity_filter" [data]="data"
-        [maxEvents]="maxNotesEvents" [isNotes]="true" (click)="intensityFilter(data)" [startDate]="startDate"
-        [endDate]="endDate" />
+      <app-data-cell *ngFor="let data of notesdata" [data]="data" (click)="intensityFilter(data)" />
       <div>More</div>
     </div>
   </div>
@@ -47,14 +44,18 @@
 
   <div>
     <label for="fromdate">From Date: </label>
-    <input type="date" id="fromdate" name="fromdate" [min]="minDate" [max]="maxDate" #fromDatePicker>
+    <input type="date" id="fromdate" name="fromdate" [min]="minDate" [max]="maxDate" #fromDatePicker
+      (change)="startDate=fromDatePicker.value">
   </div>
   <div>
     <label for="todate">To Date: </label>
-    <input type="date" id="todate" name="todate" [min]="minDate" [max]="maxDate" #toDatePicker>
+    <input type="date" id="todate" name="todate" [min]="startDate" [max]="maxDate" #toDatePicker [readonly]="!startDate"
+      (change)="endDate=toDatePicker.value" [ngClass]="{ 'disabled': !startDate}">
   </div>
-  <button (click)="dateRangeFilter()">Apply Date Range Filter</button>
-  <button (click)="resetDateRangeFilter()">Reset Date Range Filter</button>
+  <button (click)="dateRangeFilter()" [ngClass]="{ 'disabled': !startDate || !endDate}"
+    [disabled]="!startDate || !endDate">Apply Date Range Filter
+  </button>
+  <button (click)="resetDateRangeFilter(true)">Reset Date Range Filter</button>
   <button (click)="filterReset()">Reset All Filters</button>
-  <button (click)="resetIntensityFilter()">Reset Intensity Filter</button>
+  <button (click)="resetIntensityFilter(true)">Reset Intensity Filter</button>
 </div>
