@@ -15,6 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('fromDatePicker', { static: true }) fromDatePicker!: ElementRef;
   @ViewChild('toDatePicker', { static: true }) toDatePicker!: ElementRef;
   eventData: IProcessedEventData[] = [];
+  buffer: IProcessedEventData[] = [];
   notesdata: IProcessedEventData[] = [];
   daysCount!: number;
   daysInWeek: number = 7;
@@ -33,6 +34,8 @@ export class AppComponent implements OnInit, OnDestroy {
     'Sat': false
   }
   maxEvents: number = 0;
+  bufferMaxEvents: number = 0;
+  canUpdate: boolean = true;
   maxNotesEvents: number = 4;
   destroySubject: Subject<void> = new Subject<void>();
   yearFilter: IYearFilter[] = [];
@@ -45,6 +48,7 @@ export class AppComponent implements OnInit, OnDestroy {
   startDate: string = '';
   endDate: string = '';
   dateRangeFilterApplied: boolean = false;
+  batchTimeout: any;
 
   constructor(private appSrv: AppService) { }
 
@@ -190,11 +194,15 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   stopGettingDataAndResetFilters() {
+    if (this.batchTimeout) {
+      clearTimeout(this.batchTimeout);
+    }
     this.filterChanged = true;
     this.unsubscribeRandomDataGenerator();
     this.appSrv.stopRandomeDataGenerator();
     this.resetIntensityFilter(false);
     this.resetDateRangeFilter(false);
+    this.canUpdate = true;
   }
 
   filterReset() {
@@ -241,21 +249,26 @@ export class AppComponent implements OnInit, OnDestroy {
   initEventData() {
 
     this.eventData = [];
+    this.buffer = [];
 
     for (let i = 0; i < this.daysCount; i++) {
-      this.eventData[i] = {
+      const res = {
         timestamp: this.getTimeStamp(i),
         intensity: 0,
         bgColor: 'white',
         tooltip: ''
-      }
+      };
+      this.eventData[i] = { ...res };
+      this.buffer[i] = { ...res };
     }
 
     this.appSrv.setDateRange(this.fromDate, this.toDate, this.daysCount);
 
     this.appSrv.EventData$.pipe(takeUntil(this.destroySubject)).subscribe({
       next: (value: IEventData[]) => {
-        this.processEvents(value);
+        if (value.length) {
+          this.processEvents(value);
+        }
       }
     })
 
@@ -275,19 +288,33 @@ export class AppComponent implements OnInit, OnDestroy {
         return;
       }
       const index = this.findIndex(val.timestamp, this.fromDate);
-      let { timestamp, intensity, bgColor, tooltip } = this.eventData[index];
+      let { timestamp, intensity, bgColor, tooltip } = this.buffer[index];
       intensity += 1;
-      if (intensity > this.maxEvents) {
-        this.maxEvents = intensity;
+      if (intensity > this.bufferMaxEvents) {
+        this.bufferMaxEvents = intensity;
       }
-      this.eventData[index] = {
+      this.buffer[index] = {
         timestamp,
         intensity,
         bgColor,
         tooltip
       }
     }
-    this.regenerateBgColors();
+
+    if (this.canUpdate) {
+      this.canUpdate = false;
+      if (this.activeYearFilter === new Date().getFullYear()) {
+        this.batchTimeout = setTimeout(() => {
+          this.canUpdate = true;
+        }, 5000)
+      }
+      this.eventData = [];
+      for (let i = 0; i < this.buffer.length; i++) {
+        this.eventData[i] = { ...this.buffer[i] }
+      }
+      this.maxEvents = this.bufferMaxEvents;
+      this.regenerateBgColors();
+    }
   }
 
   getBgColor(intensity: number, maxIntensity: number, timestamp: Date, isNotes: boolean): { tooltip: string, bgColor: string } {
