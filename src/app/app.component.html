@@ -55,7 +55,8 @@
   <button (click)="dateRangeFilter()" [ngClass]="{ 'disabled': !startDate || !endDate}"
     [disabled]="!startDate || !endDate">Apply Date Range Filter
   </button>
-  <button (click)="resetDateRangeFilter(true)">Reset Date Range Filter</button>
+  <button (click)="resetDateRangeFilter(true)" [ngClass]="{ 'disabled': !dateRangeFilterApplied}"
+    [disabled]="!dateRangeFilterApplied">Reset Date Range Filter</button>
   <button (click)="filterReset()">Reset All Filters</button>
   <button (click)="resetIntensityFilter(true)">Reset Intensity Filter</button>
 </div>

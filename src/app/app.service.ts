@@ -42,7 +42,7 @@ export class AppService {
 
     const mockData: IEventData[] = [];
 
-    for (let i = 0; i < this.daysCount; i++) {
+    for (let i = 0; i < this.daysCount * 2; i++) {
       mockData.push({
         timestamp: this.getRandomDate()
       });
